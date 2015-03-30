@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>3 ways of truncating JS array</title>
+
+    <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Truncating JS Array</h1>
+
+    <div class="row">
+        <div class="col-lg-4">
+            <h2>Using length setter</h2>
+<pre><code>var arr = [1, 2, 3, 4, 5];
+    arr.length = 4;</code></pre>
+
+            <h2>Using slice re-assignment</h2>
+<pre><code>var arr = [1, 2, 3, 4, 5];
+    arr = arr.slice(0, 4);</code></pre>
+
+            <h2>Using splice</h2>
+
+<pre><code>var arr = [1, 2, 3, 4, 5];
+    arr.splice(3, 1);</code></pre>
+        </div>
+        <div class="col-lg-8">
+            <p>High score is worst !</p>
+            <table id="results" class="table table-striped table-hover table-bordered">
+                <thead>
+                <tr>
+                    <th>Array size</th>
+                    <th>length</th>
+                    <th>slice</th>
+                    <th>splice</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var ITERATIONS = 1000000;
+
+    function buildArray(size) {
+        var arr = [];
+        for (var i = 0; i < size; i++) {
+            arr[i] = i;
+        }
+        return arr;
+    }
+
+    function bmLength(iterations, size) {
+        var arr = buildArray(size);
+        var start = new Date();
+        for (var i = 0; i < iterations; i++) {
+            arr.length = size - 1;
+            arr.unshift(i);
+        }
+        var end = new Date();
+        return end - start;
+    }
+
+    function bmSlice(iterations, size) {
+        var arr = buildArray(size);
+        var start = new Date();
+        for (var i = 0; i < iterations; i++) {
+            arr = arr.slice(0, size - 1);
+            arr.unshift(i);
+        }
+        var end = new Date();
+        return end - start;
+    }
+
+    function bmSplice(iterations, size) {
+        var arr = buildArray(size);
+        var start = new Date();
+        for (var i = 0; i < iterations; i++) {
+            arr.splice(size - 1, 1);
+            arr.unshift(i);
+        }
+        var end = new Date();
+        return end - start;
+    }
+
+    [10, 100, 1000, 5000].forEach(function (arrSize) {
+        setTimeout(function () {
+            var lengthDuration = bmLength(ITERATIONS, arrSize);
+            var sliceDuration = bmSlice(ITERATIONS, arrSize);
+            var spliceDuration = bmSplice(ITERATIONS, arrSize);
+
+            var lengthWorst = lengthDuration > sliceDuration && lengthDuration > spliceDuration;
+            var sliceWorst = sliceDuration > spliceDuration && sliceDuration > lengthDuration;
+            var spliceWorst = spliceDuration > lengthDuration && spliceDuration > sliceDuration;
+
+            var lengthBest = lengthDuration < sliceDuration && lengthDuration < spliceDuration;
+            var sliceBest = sliceDuration < spliceDuration && sliceDuration < lengthDuration;
+            var spliceBest = spliceDuration < lengthDuration && spliceDuration < sliceDuration;
+
+            var lengthClass = lengthWorst ? 'danger' : (lengthBest ? 'success' : '');
+            var sliceClass = sliceWorst ? 'danger' : (sliceBest ? 'success' : '');
+            var spliceClass = spliceWorst ? 'danger' : (spliceBest ? 'success' : '');
+
+            var $tr = $('<tr>' +
+            '<td>' + arrSize + '</td>' +
+            '<td class="' + lengthClass + '">' + lengthDuration + '</td>' +
+            '<td class="' + sliceClass + '">' + sliceDuration + '</td>' +
+            '<td class="' + spliceClass + '">' + spliceDuration + '</td>' +
+            '</tr>');
+
+            $tr.appendTo('#results > tbody');
+        }, 0);
+    });
+
+</script>
+</body>
+</html>
