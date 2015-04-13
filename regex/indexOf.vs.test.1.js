@@ -1,4 +1,4 @@
-var Benchmark = require('benchmark');
+var Benchmark = require('benchmark'); // npm install benchmark
 var suite = new Benchmark.Suite;
 var inputs = ['R:EUR=', 'EUR='];
 
