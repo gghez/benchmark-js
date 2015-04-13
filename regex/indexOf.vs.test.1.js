@@ -1,30 +1,17 @@
-function benchit(func, iter, title) {
-    var start = new Date();
-
-    for (var i = 0; i < iter; i++) {
-        func();
-    }
-
-    var end = new Date();
-
-    console.log(title, (end - start), 'ms.');
-}
-
+var Benchmark = require('benchmark');
+var suite = new Benchmark.Suite;
 var inputs = ['R:EUR=', 'EUR='];
 
-function indexOfTest() {
-    for (var j = 0; j < inputs.length; j++) {
-        var test = inputs[j].toUpperCase().indexOf('R:') >= 0;
-    }
-}
-
-function regexTest() {
-    for (var j = 0; j < inputs.length; j++) {
-        var test = /^R:/i.test(inputs[j]);
-    }
-}
-
-var ITER = 5000000;
-
-benchit(indexOfTest, ITER, 'index Of');
-benchit(regexTest, ITER, 'regex');
+suite.add('.toUpperCase+.indexOf', function() {
+  'R:EUR='.toUpperCase().indexOf('R:') === 0;
+})
+.add('//.test', function() {
+  /^R:/i.test('R:EUR=');
+})
+.on('cycle', function(event) {
+  console.log(String(event.target));
+})
+.on('complete', function() {
+  console.log('Fastest is ' + this.filter('fastest').pluck('name'));
+})
+.run({ 'async': true });
