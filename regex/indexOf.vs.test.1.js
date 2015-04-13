@@ -1,34 +1,30 @@
+function benchit(func, iter, title) {
+    var start = new Date();
 
-function benchit(func, title) {
-	var start  = new Date();
+    for (var i = 0; i < iter; i++) {
+        func();
+    }
 
-	func();
+    var end = new Date();
 
-	var end = new Date();
-
-	console.log(title, (end - start), 'ms.');
+    console.log(title, (end - start), 'ms.');
 }
 
 var inputs = ['R:EUR=', 'EUR='];
 
-function upperCaseIndexOf() {
-
-	for (var i=0; i< 5000000; i++) {
-		for (var j=0; j<inputs.length; j++){
-			var test = inputs[j].toUpperCase().indexOf('R:') === 0;
-		}
-	}
+function indexOfTest() {
+    for (var j = 0; j < inputs.length; j++) {
+        var test = inputs[j].toUpperCase().indexOf('R:') >= 0;
+    }
 }
 
-function regex() {
-	for (var i=0; i<5000000; i++){
-		for (var j=0; j<inputs.length; j++) {
-			var test = /^R:/i.test(inputs[j]);
-		}
-	}
+function regexTest() {
+    for (var j = 0; j < inputs.length; j++) {
+        var test = /^R:/i.test(inputs[j]);
+    }
 }
 
-benchit(upperCaseIndexOf, 'index Of');
-benchit(regex, 'regex');
+var ITER = 5000000;
 
-// Output: regex is more efficient.
+benchit(indexOfTest, ITER, 'index Of');
+benchit(regexTest, ITER, 'regex');
