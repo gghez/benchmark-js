@@ -1,7 +1,7 @@
 var Benchmark = require('benchmark'); // npm install benchmark
 var suite = new Benchmark.Suite;
 
-suite.add('.toUpperCase+.indexOf', function() {
+suite.add('.indexOf', function() {
   'R:EUR='.indexOf('R:') === 0;
 })
 .add('//.test', function() {
