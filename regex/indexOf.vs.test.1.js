@@ -2,10 +2,10 @@ var Benchmark = require('benchmark'); // npm install benchmark
 var suite = new Benchmark.Suite;
 
 suite.add('.toUpperCase+.indexOf', function() {
-  'R:EUR='.toUpperCase().indexOf('R:') === 0;
+  'R:EUR='.indexOf('R:') === 0;
 })
 .add('//.test', function() {
-  /^R:/i.test('R:EUR=');
+  /^R:/.test('R:EUR=');
 })
 .on('cycle', function(event) {
   console.log(String(event.target));
